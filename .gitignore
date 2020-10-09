@@ -1,0 +1,10 @@
+*.so
+cmake-*
+test
+
+*.out
+xcelium.d/
+*.err
+xrun.history
+xrun.log
+.bpad/

@@ -1,0 +1,7 @@
+placement=vectors/design.place
+bitstream=test2
+input=vectors/a
+input=vectors/b
+output=vectors/c
+output=vectors/d
+output=vectors/e

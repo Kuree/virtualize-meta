@@ -1,0 +1,10 @@
+Block Name			X	Y		#Block ID
+---------------------------
+compute_module_compute_kernel_0$mul_3$binop		2	1		#p1
+io16_out_0_0		0	0		#I2
+io16in_in_arg_0_0_0		0	0		#I3
+io16in_in_arg_0_0_1		1	0		#I6
+io1_valid		3	0		#i4
+io1in_in_en		0	0		#i5
+io16_out_0_0		1	0		#I7
+io16_out_0_0		2	0		#I8
