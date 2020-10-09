@@ -27,6 +27,8 @@ typedef struct packed {
     int y;
 } Position;
 
+typedef byte data_array[];
+
 class CGRAInfo;
     string bitstream_filename;
     string input_filenames[];
@@ -80,6 +82,34 @@ class CGRAInfo;
             y = get_output_y(io_info, i);
             output_pos[i] = {x, y};
         end
+    endfunction
+
+    function data_array get_input_data(int idx);
+        byte result[] = new[input_size];
+        int fp = $fopen(input_filenames[idx], "rb");
+        for (int i = 0; i < input_size; i++) begin
+            byte value;
+            int code;
+            code = $fread(value, fp);
+            assert_(code == 1, $sformatf("Unable to read input data"));
+            result[i] = value;
+        end
+        $fclose(fp);
+        return result;
+    endfunction
+
+    function data_array get_output_data(int idx);
+        byte result[] = new[output_size];
+        int fp = $fopen(output_filenames[idx], "rb");
+        for (int i = 0; i < output_size; i++) begin
+            byte value;
+            int code;
+            code = $fread(value, fp);
+            assert_(code == 1, $sformatf("Unable to read input data"));
+            result[i] = value;
+        end
+        $fclose(fp);
+        return result;
     endfunction
 
     static function void assert_(bit cond, string msg);
