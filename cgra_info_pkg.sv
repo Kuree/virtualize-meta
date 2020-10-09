@@ -25,9 +25,15 @@ import "DPI-C" function int get_output_size(chandle info);
 typedef struct packed {
     int x;
     int y;
-} Position;
+} position_t;
 
-typedef byte data_array[];
+typedef struct packed {
+    int unsigned addr;
+    int unsigned data;
+} bitstream_entry_t;
+
+typedef byte data_array_t[];
+typedef bitstream_entry_t bitstream_t[];
 
 class CGRAInfo;
     string bitstream_filename;
@@ -38,10 +44,10 @@ class CGRAInfo;
     int output_size;
     int num_groups;
 
-    Position input_pos[];
-    Position output_pos[];
+    position_t input_pos[];
+    position_t output_pos[];
 
-    Position reset_pos;
+    position_t reset_pos;
 
     function new(string meta_filename);
         chandle meta_info, io_info;
@@ -84,9 +90,10 @@ class CGRAInfo;
         end
     endfunction
 
-    function data_array get_input_data(int idx);
+    function data_array_t get_input_data(int idx);
         byte result[] = new[input_size];
         int fp = $fopen(input_filenames[idx], "rb");
+        assert_(fp != 0, "Unable to read input file");
         for (int i = 0; i < input_size; i++) begin
             byte value;
             int code;
@@ -98,9 +105,10 @@ class CGRAInfo;
         return result;
     endfunction
 
-    function data_array get_output_data(int idx);
-        byte result[] = new[output_size];
+    function data_array_t get_output_data(int idx);
+        data_array_t result = new[output_size];
         int fp = $fopen(output_filenames[idx], "rb");
+        assert_(fp != 0, "Unable to read output file");
         for (int i = 0; i < output_size; i++) begin
             byte value;
             int code;
@@ -109,6 +117,30 @@ class CGRAInfo;
             result[i] = value;
         end
         $fclose(fp);
+        return result;
+    endfunction
+
+    function bitstream_t get_bitstream();
+        bitstream_t result;
+        bitstream_entry_t temp[$];
+        int fp = $fopen(bitstream_filename, "r");
+        assert_(fp != 0, "Unable to read bitstream file");
+        while (!$feof(fp)) begin
+            int unsigned addr;
+            int unsigned data;
+            int code;
+            bitstream_entry_t entry;
+            code = $fscanf(fp, "%08x %08x", entry.addr, entry.data);
+            if (code == -1) continue;
+            assert_(code == 2 , $sformatf("Incorrect bs format. Expected 2 entries, got: %d. Current entires: %d", code, temp.size()));
+            temp.push_back(entry);
+        end
+        // allocate size
+        result = new[temp.size()];
+        for (int i = 0; i < result.size(); i++) begin
+            bitstream_entry_t entry = temp.pop_front();
+            result[i] = entry;
+        end
         return result;
     endfunction
 

@@ -5,6 +5,8 @@ import cgra_info_pkg::*;
 CGRAInfo info;
 byte input_data[];
 byte output_data[];
+bitstream_t bitstream;
+bitstream_entry_t bs_entry;
 
 initial begin
     info = new("vectors/design.meta");
@@ -25,6 +27,13 @@ initial begin
     assert(output_data[0] == 'h78);
     assert(output_data[output_data.size() - 1] == 'ha);
     assert(output_data.size() == 4);
+
+    // get bitstream
+    bitstream = info.get_bitstream();
+    assert(bitstream.size() == 11);
+    bs_entry = bitstream[1];
+    assert(bs_entry.addr == 'h01000203);
+    assert(bs_entry.data == 'h48000200);
 
 end
 

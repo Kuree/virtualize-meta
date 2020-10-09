@@ -1,5 +1,5 @@
 placement=vectors/design.place
-bitstream=test2
+bitstream=vectors/design.bs
 input=vectors/a
 input=vectors/b
 output=vectors/c

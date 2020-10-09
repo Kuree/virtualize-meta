@@ -12,7 +12,7 @@ int main() {
 
     struct MetaInfo *info = parse_metadata("vectors/design.meta");
     assert(strncmp(info->placement_filename, "vectors/design.place", 21) == 0);
-    assert(strncmp(info->bitstream_filename, "test2", 6) == 0);
+    assert(strncmp(info->bitstream_filename, "vectors/design.bs", 6) == 0);
     assert(strncmp(info->input_filenames[0], "vectors/a", 10) == 0);
     assert(strncmp(info->output_filenames[2], "vectors/e", 14) == 0);
     assert(info->input_size == 8);
